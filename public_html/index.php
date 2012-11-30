@@ -14,4 +14,4 @@ require_once 'layer/core/Main.class.php';
 /**
  * Start the Main-Process
  */
-$Main = new Main();
+$Main = new \racore\layer\core\Main();
