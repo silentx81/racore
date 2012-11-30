@@ -15,6 +15,7 @@ class Main
         echo "hallo <hr>";
         $this->_requiredFiles();
         echo "DB-Connection: ".DB::connect("localhost", "raweb1", "raweb", "test")."<hr>";
+        return $this;
 
     }
 
