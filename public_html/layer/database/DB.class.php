@@ -15,7 +15,7 @@ class DB
      */
     private static $_instance = false;
     private static $_reference = null;
-
+    private static $_statement = null;
 
     /**
      * Connect to the Database
@@ -54,17 +54,48 @@ class DB
 
     }
 
-
     /**
      * Load the instance
      *
      * @return DB
      */
-    public static function instance() {
+    public static function instance()
+    {
         if(!self::$_instance) {
             self::$_instance = new self();
         }
         return self::$_instance;
+    }
+
+    public static function fetchAll() {
+        self::$_statement->fetchAll();
+    }
+
+    /**
+     * Ausführen eines Befehls
+     *
+     * @param string    $pstrQuery
+     * @param array     $parrVars
+     *
+     * @return void
+     */
+    public static function query($pstrQuery, $parrVars)
+    {
+        self::$_statement = self::$_reference->prepare($pstrQuery);
+        foreach($parrVars AS $lstrKey=>$lstrValue) {
+            $lstrName = $lstrKey;
+            $ladata = json_decode($lstrValue, true);
+            $lstrContent = $ladata['value'];
+            switch($ladata['type']) {
+                case "int":
+                    $lintType = \PDO::PARAM_INT;
+                    break;
+            }
+            $lstrLength = $ladata['length'];
+            self::$_statement->bindParam($lstrName, $lstrContent, $lintType, $lstrLength);
+        }
+        self::$_statement->execute();
+        echo self::$_statement->fetchAll();
     }
 
     /**
@@ -72,6 +103,7 @@ class DB
      *
      * @return void
      */
-    protected function __construct() {
+    protected function __construct()
+    {
     }
 }

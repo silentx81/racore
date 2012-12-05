@@ -6,6 +6,12 @@
  * Description: Index for the UNITTEST
  */
 
+/**
+ * Main-Requirements
+ */
+require_once '../public_html/layer/core/Config.class.php';
+\racore\layer\core\Config::setConfig("root_path", "../public_html/");
+
 // Set new include path to PEAR
 $path = '/usr/share/php5/PEAR';
 set_include_path(get_include_path() . PATH_SEPARATOR . $path);
@@ -14,11 +20,13 @@ set_include_path(get_include_path() . PATH_SEPARATOR . $path);
 require_once 'PHPUnit/Autoload.php';
 require_once 'layer/database/DBTest.class.php';
 require_once 'layer/core/MainTest.class.php';
+require_once 'layer/core/ConfigTest.class.php';
 
 // Create test suite
 $suite = new PHPUnit_Framework_TestSuite('PHPUnit');
 $suite->addTestSuite('DBTest');
 $suite->addTestSuite('MainTest');
+$suite->addTestSuite('ConfigTest');
 $result = PHPUnit_TextUI_TestRunner::run($suite);
 
 // Return test suite results

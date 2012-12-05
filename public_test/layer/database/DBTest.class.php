@@ -14,9 +14,19 @@ class DBTest extends PHPUnit_Framework_TestCase
     /**
      * Test connect from the Database
      */
-    public function test_connect() {
+    public function test_connect()
+    {
         $this->assertEquals(false, DB::connect("Server", "Database", "User", "Password", "Typ"));
         $this->assertEquals(false, DB::connect("Server", "Database", "User", "Password"));
     }
+
+    public function test_query()
+    {
+
+    }
+
+
+
+
 }
 
