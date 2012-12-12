@@ -7,7 +7,7 @@
  */
 use \racore\layer\core\Config AS Config;
 
-require_once "../public_html/layer/core/Config.class.php";
+require_once \racore\PROJECT_DOCUMENT_ROOT."/layer/core/Config.class.php";
 
 class ConfigTest extends PHPUnit_Framework_TestCase
 {

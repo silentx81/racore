@@ -8,14 +8,34 @@
 namespace racore\layer\database;
 use \PDO AS PDO;
 
-class DB
+/**
+ * DB - Databaseclass
+ *
+ * Example for Using
+ * -----------------
+ * $lstrQuery       = "SELECT * FROM [table] WHERE [id]=:id";
+ * $larrData['id']  = '{"value":"1", "type":"int", "length":"11"}';
+ * DB::query($lstrQuery, $larrData);
+ *
+ * $larrResult = DB::fetchAll();
+ */
+final class DB
 {
     /**
-     * Private Vars
+     * @var null|DB
      */
     private static $_instance = false;
+
+    /**
+     * @var null|\PDO
+     */
     private static $_reference = null;
-    private static $_statement = null;
+
+    /**
+     * @var null|\PDOStatement
+     */
+    private static $_statement;
+
 
     /**
      * Connect to the Database
@@ -35,7 +55,6 @@ class DB
                                         $pstrTyp = "mysql")
     {
         self::instance();
-        $lbooReturn = true;
         if (array_search("pdo_".$pstrTyp, get_loaded_extensions()) === FALSE) {
             $lbooReturn = false;
         } else {
@@ -63,29 +82,49 @@ class DB
     {
         if(!self::$_instance) {
             self::$_instance = new self();
+
         }
         return self::$_instance;
     }
 
-    public static function fetchAll() {
-        self::$_statement->fetchAll();
+    /**
+     * Give a single row-Array back
+     *
+     * @return array
+     */
+    public static function fetch() {
+        self::instance();
+        return self::$_statement->fetch();
     }
 
     /**
-     * Ausführen eines Befehls
+     * Give a complete Array back
+     *
+     * @return array
+     */
+    public static function fetchAll() {
+        self::instance();
+        return self::$_statement->fetchAll();
+    }
+
+    /**
+     * Send the Query to the Database
      *
      * @param string    $pstrQuery
      * @param array     $parrVars
      *
-     * @return void
+     * @return boolean
      */
     public static function query($pstrQuery, $parrVars)
     {
-        self::$_statement = self::$_reference->prepare($pstrQuery);
+        self::instance();
+        $lbooReturn = false;
+        self::$_statement = self::_prepare($pstrQuery);
         foreach($parrVars AS $lstrKey=>$lstrValue) {
             $lstrName = $lstrKey;
             $ladata = json_decode($lstrValue, true);
             $lstrContent = $ladata['value'];
+            $lintType = \PDO::PARAM_STR;
             switch($ladata['type']) {
                 case "int":
                     $lintType = \PDO::PARAM_INT;
@@ -94,16 +133,38 @@ class DB
             $lstrLength = $ladata['length'];
             self::$_statement->bindParam($lstrName, $lstrContent, $lintType, $lstrLength);
         }
-        self::$_statement->execute();
-        echo self::$_statement->fetchAll();
+        if(self::$_statement->execute()) {
+            $lbooReturn = true;
+        }
+        return $lbooReturn;
     }
 
     /**
-     * Constructor
+     * Count the Rows
      *
-     * @return void
+     * @return int
      */
+    public static function rowCount() {
+        self::instance();
+        return self::$_statement->rowCount();
+    }
+
+    /**
+     * @param $pstrQuery
+     *
+     * @return \PDOStatement
+     */
+    private function _prepare($pstrQuery)
+    {
+        return self::$_reference->prepare($pstrQuery);
+    }
+
     protected function __construct()
     {
     }
+
+    protected function __clone()
+    {
+    }
+
 }

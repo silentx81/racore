@@ -7,12 +7,16 @@
  */
 namespace racore\layer\core;
 
-class Config
+final class Config
 {
     /**
-     * Private Vars
+     * @var null|Config
      */
-    private static $_instance = false;
+    private static $_instance = null;
+
+    /**
+     * @var array
+     */
     private static $_arrConfig = array();
 
     /**
@@ -24,6 +28,7 @@ class Config
      */
     public static function getConfig($pstrName)
     {
+        self::instance();
         $lstrReturn = "";
         self::instance();
         if(isset(self::$_arrConfig)) {
@@ -54,6 +59,7 @@ class Config
      */
     public static function setConfig($pstrName, $pstrValue)
     {
+        self::instance();
         self::$_arrConfig[$pstrName] = $pstrValue;
     }
 
@@ -77,12 +83,11 @@ class Config
         return $lbooReturn;
     }
 
-    /**
-     * Constructor
-     *
-     * @return void
-     */
-    protected function __construct() {
+    protected function __construct()
+    {
+    }
+    protected function __clone()
+    {
     }
 
 }

@@ -7,9 +7,26 @@
  */
 
 /**
+ * Define Documtent AND Project Document Root
+ */
+define("TEST_DOCUMENT_ROOT", __DIR__);
+define('racore\PROJECT_DOCUMENT_ROOT',
+                        str_replace("public_test", "public_html", __DIR__));
+
+$lstrDocRoot = $_SERVER['DOCUMENT_ROOT'];
+$lstrProject = str_replace($lstrDocRoot, '', str_replace('\\', '/', __DIR__));
+$lstrProtocol = "https://";
+if(!isset($_SERVER['HTTPS']) OR $_SERVER['HTTPS'] == 'off') {
+    $lstrProtocol = "http://";
+}
+$lstrhttphost = str_replace("test", "", $_SERVER['HTTP_HOST']);
+define('PROJECT_HTTP_ROOT', $lstrProtocol.$lstrhttphost.$lstrProject);
+define('TEST_HTTP_ROOT', $lstrProtocol.$_SERVER['HTTP_HOST'].$lstrProject);
+
+/**
  * Main-Requirements
  */
-require_once '../public_html/layer/core/Config.class.php';
+require_once racore\PROJECT_DOCUMENT_ROOT.'/layer/core/Config.class.php';
 \racore\layer\core\Config::setConfig("root_path", "../public_html/");
 
 // Set new include path to PEAR
@@ -18,9 +35,9 @@ set_include_path(get_include_path() . PATH_SEPARATOR . $path);
 
 // Include all needed files
 require_once 'PHPUnit/Autoload.php';
-require_once 'layer/database/DBTest.class.php';
-require_once 'layer/core/MainTest.class.php';
-require_once 'layer/core/ConfigTest.class.php';
+require_once TEST_DOCUMENT_ROOT.'/layer/database/DBTest.class.php';
+require_once TEST_DOCUMENT_ROOT.'/layer/core/MainTest.class.php';
+require_once TEST_DOCUMENT_ROOT.'/layer/core/ConfigTest.class.php';
 
 // Create test suite
 $suite = new PHPUnit_Framework_TestSuite('PHPUnit');

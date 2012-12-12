@@ -13,6 +13,7 @@ class Main
 {
     public function __construct()
     {
+
         $this->_requiredFiles();
 
         DB::connect("localhost", "raweb", "raweb", "test", "mysql");
@@ -32,8 +33,7 @@ class Main
 
     private function _requiredFiles()
     {
-        $lstrRootPath = Config::getConfig('root_path');
-        require_once $lstrRootPath.'layer/database/DB.class.php';
+        require_once \racore\PROJECT_DOCUMENT_ROOT.'/layer/database/DB.class.php';
     }
 
 }
